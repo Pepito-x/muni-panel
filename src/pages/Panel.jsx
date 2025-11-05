@@ -41,7 +41,6 @@ export default function Panel() {
 
   const handleFile = (e) => setFile(e.target.files[0]);
 
-  // 🟢 Importar CSV y generar códigos
   const parseCSV = () => {
     if (!file) {
       setMessage("⚠️ Sube un archivo CSV con columnas correo y rol.");
@@ -61,7 +60,6 @@ export default function Panel() {
 
           const codigo = generateCode(rol);
 
-          // Verificar si ya existe
           const q = query(collection(db, "usuarios_pendientes"), where("correo", "==", correo));
           const snap = await getDocs(q);
 
@@ -87,67 +85,58 @@ export default function Panel() {
     });
   };
 
-  // 🟢 Cargar usuarios desde Firestore
   const loadUsers = async () => {
     const snap = await getDocs(collection(db, "usuarios_pendientes"));
     setUsers(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
   };
 
-  // 🟢 Generar imagen dentro de un modal
- const generarImagenCodigo = async (user) => {
-  // Crear contenedor oculto temporal en el DOM
-  const tempContainer = document.createElement("div");
-  tempContainer.style.position = "absolute";
-  tempContainer.style.left = "-9999px"; // fuera de pantalla
-  document.body.appendChild(tempContainer);
+  const generarImagenCodigo = async (user) => {
+    const tempContainer = document.createElement("div");
+    tempContainer.style.position = "absolute";
+    tempContainer.style.left = "-9999px";
+    document.body.appendChild(tempContainer);
 
-  // Crear el contenido visual del código
-const node = document.createElement("div");
-node.style.padding = "20px";
-node.style.background = "#ffffff";
-node.style.width = "350px";
-node.style.textAlign = "center";
-node.style.border = "2px solid #1976d2";
-node.style.borderRadius = "12px";
-node.style.fontFamily = "Arial, sans-serif";
-node.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
-node.innerHTML = `
-  <img src="/logo_reque.png"
-       alt="Logo Municipalidad" 
-       style="width:80px;margin-bottom:10px;" />
-  <h2 style="color:#1976d2;margin-bottom:8px;">Municipalidad Distrital de Reque</h2>
-  <p><strong>Correo:</strong> ${user.correo}</p>
-  <p><strong>Rol:</strong> ${user.rol}</p>
-  <h3 style="background:#1976d2;color:white;padding:10px;border-radius:8px;margin:10px 0;">
-    ${user.codigo}
-  </h3>
-  <p style="font-size:12px;color:#555;margin-top:10px;">
-    Código de acceso interno - ${new Date().getFullYear()}
-  </p>
-`;
+    const node = document.createElement("div");
+    node.style.padding = "20px";
+    node.style.background = "#ffffff";
+    node.style.width = "350px";
+    node.style.textAlign = "center";
+    node.style.border = "2px solid #1976d2";
+    node.style.borderRadius = "12px";
+    node.style.fontFamily = "Arial, sans-serif";
+    node.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
+    node.innerHTML = `
+      <img src="/logo_reque.png"
+           alt="Logo Municipalidad" 
+           style="width:80px;margin-bottom:10px;" />
+      <h2 style="color:#1976d2;margin-bottom:8px;">Municipalidad Distrital de Reque</h2>
+      <p><strong>Correo:</strong> ${user.correo}</p>
+      <p><strong>Rol:</strong> ${user.rol}</p>
+      <h3 style="background:#1976d2;color:white;padding:10px;border-radius:8px;margin:10px 0;">
+        ${user.codigo}
+      </h3>
+      <p style="font-size:12px;color:#555;margin-top:10px;">
+        Código de acceso interno - ${new Date().getFullYear()}
+      </p>
+    `;
 
-  tempContainer.appendChild(node);
+    tempContainer.appendChild(node);
 
-  try {
-    // Esperar un pequeño tiempo para que el navegador lo pinte
-    await new Promise((r) => setTimeout(r, 200));
+    try {
+      await new Promise((r) => setTimeout(r, 200));
 
-    // Generar imagen
-    const dataUrl = await htmlToImage.toPng(node, { quality: 1 });
-    setPreviewImg(dataUrl);
-    setSelectedUser(user);
-    setModalOpen(true);
-  } catch (error) {
-    console.error("Error generando imagen:", error);
-    setMessage("❌ No se pudo generar la imagen.");
-  } finally {
-    // Eliminar el nodo temporal
-    document.body.removeChild(tempContainer);
-  }
-};
+      const dataUrl = await htmlToImage.toPng(node, { quality: 1 });
+      setPreviewImg(dataUrl);
+      setSelectedUser(user);
+      setModalOpen(true);
+    } catch (error) {
+      console.error("Error generando imagen:", error);
+      setMessage("❌ No se pudo generar la imagen.");
+    } finally {
+      document.body.removeChild(tempContainer);
+    }
+  };
 
-
-  // 🟢 Descargar imagen desde modal
   const descargarImagen = () => {
     const link = document.createElement("a");
     link.download = `codigo_${selectedUser.correo}.png`;
@@ -161,9 +150,9 @@ node.innerHTML = `
   };
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{ px: 2 }}>
       <Box sx={{ display: "flex", justifyContent: "space-between", mt: 4 }}>
-        <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+        <Typography variant="h5" sx={{ fontWeight: "bold", fontFamily: "Poppins, sans-serif" }}>
           Panel Jefe - Códigos de Autorización
         </Typography>
         <Button variant="outlined" onClick={handleLogout}>
@@ -173,7 +162,7 @@ node.innerHTML = `
 
       <Box sx={{ mt: 3 }}>
         <Typography sx={{ mb: 1 }}>📁 Subir CSV (columnas: correo, rol)</Typography>
-        <Input type="file" onChange={handleFile} />
+        <Input type="file" onChange={handleFile} fullWidth sx={{ mb: 2 }} />
         <Button variant="contained" sx={{ ml: 2 }} onClick={parseCSV}>
           Generar códigos
         </Button>
@@ -216,7 +205,6 @@ node.innerHTML = `
         </Table>
       </Box>
 
-      {/* 🟢 Modal de vista previa */}
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
         <Box
           sx={{
@@ -229,6 +217,7 @@ node.innerHTML = `
             p: 3,
             borderRadius: 2,
             textAlign: "center",
+            width: { xs: "90%", sm: "auto" },
           }}
         >
           <Typography variant="h6" sx={{ mb: 2 }}>
