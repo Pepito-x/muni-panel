@@ -20,13 +20,33 @@ function App() {
   if (loading) return <div style={{ padding: 50 }}>Cargando...</div>;
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/panel" element={user ? <Panel /> : <Navigate to="/login" />} />
-        <Route path="*" element={<Navigate to={user ? "/panel" : "/login"} />} />
-      </Routes>
-    </BrowserRouter>
+   <BrowserRouter>
+  <Routes>
+    {/* La raíz "/" es la página de login */}
+    <Route 
+      path="/" 
+      element={user ? <Navigate to="/panel" replace /> : <Login />} 
+    />
+    
+    {/* Ruta explícita /login (opcional, para compatibilidad) */}
+    <Route 
+      path="/login" 
+      element={user ? <Navigate to="/panel" replace /> : <Login />} 
+    />
+    
+    {/* Panel protegido */}
+    <Route 
+      path="/panel" 
+      element={user ? <Panel /> : <Navigate to="/" replace />} 
+    />
+    
+    {/* Cualquier otra ruta → redirige según estado */}
+    <Route 
+      path="*" 
+      element={user ? <Navigate to="/panel" replace /> : <Navigate to="/" replace />} 
+    />
+  </Routes>
+</BrowserRouter>
   );
 }
 
