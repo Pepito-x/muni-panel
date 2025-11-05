@@ -102,30 +102,29 @@ export default function Panel() {
   document.body.appendChild(tempContainer);
 
   // Crear el contenido visual del código
-  const node = document.createElement("div");
-  node.style.padding = "20px";
-  node.style.background = "#ffffff";
-  node.style.width = "350px";
-  node.style.textAlign = "center";
-  node.style.border = "2px solid #1976d2";
-  node.style.borderRadius = "12px";
-  node.style.fontFamily = "Arial, sans-serif";
-  node.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
-  node.innerHTML = `
-    <img src="${window.location.origin}/src/assets/logo_reque.png"
-
-         alt="Logo Municipalidad" 
-         style="width:80px;margin-bottom:10px;" />
-    <h2 style="color:#1976d2;margin-bottom:8px;">Municipalidad Distrital de Reque</h2>
-    <p><strong>Correo:</strong> ${user.correo}</p>
-    <p><strong>Rol:</strong> ${user.rol}</p>
-    <h3 style="background:#1976d2;color:white;padding:10px;border-radius:8px;margin:10px 0;">
-      ${user.codigo}
-    </h3>
-    <p style="font-size:12px;color:#555;margin-top:10px;">
-      Código de acceso interno - ${new Date().getFullYear()}
-    </p>
-  `;
+const node = document.createElement("div");
+node.style.padding = "20px";
+node.style.background = "#ffffff";
+node.style.width = "350px";
+node.style.textAlign = "center";
+node.style.border = "2px solid #1976d2";
+node.style.borderRadius = "12px";
+node.style.fontFamily = "Arial, sans-serif";
+node.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
+node.innerHTML = `
+  <img src="/logo_reque.png"
+       alt="Logo Municipalidad" 
+       style="width:80px;margin-bottom:10px;" />
+  <h2 style="color:#1976d2;margin-bottom:8px;">Municipalidad Distrital de Reque</h2>
+  <p><strong>Correo:</strong> ${user.correo}</p>
+  <p><strong>Rol:</strong> ${user.rol}</p>
+  <h3 style="background:#1976d2;color:white;padding:10px;border-radius:8px;margin:10px 0;">
+    ${user.codigo}
+  </h3>
+  <p style="font-size:12px;color:#555;margin-top:10px;">
+    Código de acceso interno - ${new Date().getFullYear()}
+  </p>
+`;
 
   tempContainer.appendChild(node);
 
